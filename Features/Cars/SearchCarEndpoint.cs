@@ -34,9 +34,9 @@ namespace CarStockAPI.Features.Cars
             var results = await _repo.Search(dealerId, make, model);
 
             if (results is null)
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
             else
-                await SendAsync(results);
+                await Send.OkAsync(results);
         }
     }
 }

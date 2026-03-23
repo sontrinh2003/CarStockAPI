@@ -1,6 +1,7 @@
 ﻿using CarStockAPI.Models;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using System.Data;
 
 namespace CarStockAPI.Repositories
 {
@@ -16,7 +17,7 @@ namespace CarStockAPI.Repositories
         // List cars and stock levels
         public async Task<List<Car>> GetAll(int dealerId)
         {
-            using var conn = GetConnection();
+            using var conn = new SqliteConnection("Data Source=Database/cars.db");
 
             var cars = await conn.QueryAsync<Car>(
                 "SELECT * FROM Cars WHERE DealerId = @DealerId",

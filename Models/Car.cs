@@ -1,6 +1,6 @@
 ﻿namespace CarStockAPI.Models
 {
-    public class Cars
+    public class Car
     {
         public int Id { get; set; }
         public int DealerId { get; set; }

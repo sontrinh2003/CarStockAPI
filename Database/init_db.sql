@@ -1,3 +1,4 @@
+/*
 DROP TABLE IF EXISTS Cars;
 DROP TABLE IF EXISTS Dealers;
 
@@ -31,3 +32,4 @@ INSERT INTO Cars (DealerId, Make, Model, Year, Stock) VALUES
 (2, 'Mercedes-Benz', 'C200', 2021, 4),
 (2, 'Tesla', 'Model 3', 2022, 6),
 (2, 'Honda', 'Civic', 2017, 8);
+*/

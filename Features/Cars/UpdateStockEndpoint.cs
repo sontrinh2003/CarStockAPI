@@ -31,12 +31,12 @@ namespace CarStockAPI.Features.Cars
             if (req.Stock < 0)
             {
                 AddError(r => r.Stock, "Stock cannot be negative");
-                await SendErrorsAsync();
+                await Send.ErrorsAsync();
                 return;
             }
 
             await _repo.UpdateStock(id, dealerId, req.Stock);
-            await SendOkAsync();
+            await Send.OkAsync();
         }
     }
 }

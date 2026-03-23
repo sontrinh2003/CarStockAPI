@@ -1,28 +1,26 @@
-global using FastEndpoints;
+﻿using CarStockAPI.Repositories;
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using Microsoft.Data.Sqlite;
+using System.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder();
 
-// Add services to the container.
+builder.Services
+    .AddAuthorization()
+    .AddFastEndpoints()
+    .SwaggerDocument();
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-builder.Services.AddFastEndpoints();
+// SQLite connection
+var dbPath = builder.Configuration.GetConnectionString("SqliteDb");
+builder.Services.AddScoped<IDbConnection>(_ => new SqliteConnection(dbPath));
+
+builder.Services.AddScoped<CarRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.UseFastEndpoints();
+app.UseAuthorization()
+    .UseFastEndpoints()
+    .UseSwaggerGen();
 
 app.Run();

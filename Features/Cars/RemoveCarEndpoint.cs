@@ -15,6 +15,7 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Delete("/api/cars/{id}");
+            AllowAnonymous();
             // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
@@ -24,7 +25,7 @@ namespace CarStockAPI.Features.Cars
             int dealerId = 1; // replace with JWT claim
 
             await _repo.Delete(id, dealerId);
-            await SendOkAsync();
+            await Send.OkAsync();
         }
     }
 }

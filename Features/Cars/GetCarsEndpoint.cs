@@ -15,6 +15,7 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Get("/api/cars");
+            AllowAnonymous();
             // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
@@ -22,7 +23,7 @@ namespace CarStockAPI.Features.Cars
         {
             int dealerId = 1; // replace with JWT claim
             var cars = await _repo.GetAll(dealerId);
-            await SendAsync(cars);
+            await Send.OkAsync(cars);
         }
     }
 }

@@ -32,13 +32,13 @@ namespace CarStockAPI.Features.Cars
             if (req.Make is null)
             {
                 AddError(r => r.Make, "Make cannot be empty");
-                await SendErrorsAsync();
+                await Send.ErrorsAsync();
                 return;
             }
             if (req.Model is null)
             {
                 AddError(r => r.Make, "Model cannot be empty");
-                await SendErrorsAsync();
+                await Send.ErrorsAsync();
                 return;
             }
 
@@ -52,7 +52,7 @@ namespace CarStockAPI.Features.Cars
             };
 
             await _repo.Add(car);
-            await SendOkAsync();
+            await Send.OkAsync();
         }
     }
 }
