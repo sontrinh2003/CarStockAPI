@@ -1,0 +1,42 @@
+﻿using FastEndpoints;
+using CarStockAPI.Repositories;
+
+namespace CarStockAPI.Features.Cars
+{
+    public class SearchCarsRequest
+    {
+        public string? Make { get; set; }
+        public string? Model { get; set; }
+    }
+
+    public class SearchCarsEndpoint : Endpoint<SearchCarsRequest>
+    {
+        private readonly CarRepository _repo;
+
+        public SearchCarsEndpoint(CarRepository repo)
+        {
+            _repo = repo;
+        }
+
+        public override void Configure()
+        {
+            Get("/api/cars/search");
+            // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
+        }
+
+        public override async Task HandleAsync(SearchCarsRequest req, CancellationToken ct)
+        {
+            int dealerId = 1; // replace with JWT claim
+
+            var make = req.Make ?? string.Empty;
+            var model = req.Model ?? string.Empty;
+
+            var results = await _repo.Search(dealerId, make, model);
+
+            if (results is null)
+                await SendNotFoundAsync();
+            else
+                await SendAsync(results);
+        }
+    }
+}
