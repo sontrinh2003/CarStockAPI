@@ -59,7 +59,7 @@ CarStockAPI/
 
 1. Running the API
 
-Ensure .NET 8 SDK is installed.
+Ensure .NET 9 SDK is installed.
 
 Restore packages:
 
@@ -124,4 +124,5 @@ Authorization: Bearer <JWT_TOKEN>
 **Notes**
 
 All endpoints require JWT authentication except /api/login
-Database folder must exist before running the API
+
+Database file must exist before running the API
