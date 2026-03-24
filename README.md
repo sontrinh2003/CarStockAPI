@@ -57,7 +57,23 @@ CarStockAPI/
 
 ## Testing the API
 
-1. The API will be available at:
+1. Running the API
+
+Ensure .NET 8 SDK is installed.
+
+Restore packages:
+
+```dotnet restore```
+
+Build the project:
+
+```dotnet build```
+
+Run the project:
+
+```dotnet run```
+
+The API will be available at:
 
 http://localhost:8080/swagger
 
@@ -85,6 +101,7 @@ Response:
 
 Save this token for API interactions.
 
+
 3. Use the token for all protected endpoints in the Authorization header:
 
 Authorization: Bearer <JWT_TOKEN>
@@ -99,5 +116,6 @@ Authorization: Bearer <JWT_TOKEN>
 
 
 **Notes**
+
 All endpoints require JWT authentication except /api/login
 Database folder must exist before running the API
