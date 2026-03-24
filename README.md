@@ -39,7 +39,7 @@ CarStockAPI/
 │
 ├─ Database/
 │ └─ cars.db
-│ └─ init_db_.sql
+│ └─ init_db.sql
 |
 ├─ Program.cs
 ├─ appsettings.json
@@ -51,7 +51,7 @@ CarStockAPI/
 ## Database
 
 - Uses SQLite database stored at `Database/cars.db`
-- Database schema and seed data are in `init_db_.sql`
+- Database schema and seed data are in `init_db.sql`
 
 ---
 
