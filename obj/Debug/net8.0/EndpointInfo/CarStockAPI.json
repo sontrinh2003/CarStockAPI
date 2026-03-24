@@ -28,16 +28,8 @@
         "responses": {
           "204": {
             "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
-        },
-        "security": [
-          {
-            "JWTBearerAuth": []
-          }
-        ]
+        }
       },
       "get": {
         "tags": [
@@ -45,8 +37,18 @@
         ],
         "operationId": "CarStockAPIFeaturesCarsListCarsEndpoint",
         "responses": {
-          "204": {
-            "description": "No Content"
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CarStockAPIModelsCar"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -101,16 +103,8 @@
         "responses": {
           "204": {
             "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
-        },
-        "security": [
-          {
-            "JWTBearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/cars/{id}/stock": {
@@ -145,16 +139,8 @@
         "responses": {
           "204": {
             "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
-        },
-        "security": [
-          {
-            "JWTBearerAuth": []
-          }
-        ]
+        }
       }
     }
   },
@@ -164,6 +150,34 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "make": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CarStockAPIModelsCar": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dealerId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "make": {
             "type": "string"
           },

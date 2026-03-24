@@ -21,6 +21,7 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Get("/api/cars/search");
+            AllowAnonymous();
             // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 

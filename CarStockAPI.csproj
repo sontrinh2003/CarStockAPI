@@ -8,15 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.72" />
-    <PackageReference Include="FastEndpoints" Version="8.0.1">
+    <PackageReference Include="FastEndpoints" Version="7.2.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="FastEndpoints.Swagger" Version="8.0.1" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="7.2.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.5" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Auth\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Auth\" />
+	</ItemGroup>
 
 </Project>

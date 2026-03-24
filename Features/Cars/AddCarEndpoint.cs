@@ -24,6 +24,7 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Post("/api/cars");
+            AllowAnonymous();
             // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
