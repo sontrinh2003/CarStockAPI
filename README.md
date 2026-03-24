@@ -39,7 +39,7 @@ CarStockAPI/
 │
 ├─ Database/
 │ └─ cars.db
-│ └─ init.sql
+│ └─ init_db_.sql
 |
 ├─ Program.cs
 ├─ appsettings.json
@@ -51,7 +51,7 @@ CarStockAPI/
 ## Database
 
 - Uses SQLite database stored at `Database/cars.db`
-- Database schema and seed data are in `init.sql`
+- Database schema and seed data are in `init_db_.sql`
 
 ---
 
@@ -123,6 +123,6 @@ Authorization: Bearer <JWT_TOKEN>
 
 **Notes**
 
-All endpoints require JWT authentication except /api/login
+- All endpoints require JWT authentication except /api/login
 
-Database file must exist before running the API
+- Database file must exist before running the API
