@@ -63,15 +63,22 @@ Ensure .NET 8 SDK is installed.
 
 Restore packages:
 
-```dotnet restore```
+```
+dotnet restore
+```
 
 Build the project:
 
-```dotnet build```
+```
+dotnet build
+```
 
 Run the project:
 
-```dotnet run```
+```
+dotnet run
+```
+
 
 The API will be available at:
 
@@ -100,7 +107,6 @@ Response:
 ```
 
 Save this token for API interactions.
-
 
 3. Use the token for all protected endpoints in the Authorization header:
 
