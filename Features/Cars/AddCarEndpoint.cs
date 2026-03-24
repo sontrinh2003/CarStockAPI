@@ -24,8 +24,6 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Post("/api/cars");
-            AllowAnonymous();
-            // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
         public override async Task HandleAsync(AddCarRequest req, CancellationToken ct)
@@ -42,10 +40,11 @@ namespace CarStockAPI.Features.Cars
                 await Send.ErrorsAsync();
                 return;
             }
-
+            // Get Dealer ID
+            var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
             var car = new Car
             {
-                DealerId = 1,
+                DealerId = dealerId,
                 Make = req.Make,
                 Model = req.Model,
                 Year = req.Year,

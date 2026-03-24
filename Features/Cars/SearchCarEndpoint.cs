@@ -21,13 +21,11 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Get("/api/cars/search");
-            AllowAnonymous();
-            // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
         public override async Task HandleAsync(SearchCarsRequest req, CancellationToken ct)
         {
-            int dealerId = 1; // replace with JWT claim
+            var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
 
             var make = req.Make ?? string.Empty;
             var model = req.Model ?? string.Empty;

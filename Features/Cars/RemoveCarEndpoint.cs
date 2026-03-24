@@ -15,14 +15,12 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Delete("/api/cars/{id}");
-            AllowAnonymous();
-            // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
         public override async Task HandleAsync(CancellationToken ct)
         {
             var id = Route<int>("id");
-            int dealerId = 1; // replace with JWT claim
+            var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
 
             await _repo.Delete(id, dealerId);
             await Send.OkAsync();

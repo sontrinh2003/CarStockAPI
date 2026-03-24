@@ -20,14 +20,12 @@ namespace CarStockAPI.Features.Cars
         public override void Configure()
         {
             Put("/api/cars/{id}/stock");
-            AllowAnonymous();
-            // Enhancement: Authenticate dealer using JWT Token (contains DealerID)
         }
 
         public override async Task HandleAsync(UpdateStockRequest req, CancellationToken ct)
         {
             var id = Route<int>("id");
-            int dealerId = 1; // replace with JWT claim
+            var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
 
             if (req.Stock < 0)
             {
