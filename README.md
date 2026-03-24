@@ -17,7 +17,7 @@ Supports JWT authentication to ensure each dealer only accesses their own data.
 
 ## Project Structure
 
-
+```
 CarStockAPI/
 │
 ├─ Features/
@@ -43,6 +43,7 @@ CarStockAPI/
 |
 ├─ Program.cs
 ├─ appsettings.json
+```
 
 
 ---
