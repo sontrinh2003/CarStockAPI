@@ -63,7 +63,7 @@ http://localhost:8080/swagger
 
 1. Login to get Token
 
-POST ```/api/login```
+POST `/api/login`
 
 This sample credentials can be used:
 
@@ -82,9 +82,18 @@ Response:
 }
 ```
 
-Use the token for all protected endpoints in the Authorization header:
+2. Use the token for all protected endpoints in the Authorization header:
 
 Authorization: Bearer <JWT_TOKEN>
+
+| Method | Endpoint                      | Description                                 |
+| ------ | ----------------------------- | ------------------------------------------- |
+| GET    | /api/cars                     | List all cars for the logged-in dealer      |
+| POST   | /api/cars                     | Add a new car for the logged-in dealer      |
+| PUT    | /api/cars/{id}/stock          | Update stock for a car (owned by dealer)    |
+| DELETE | /api/cars/{id}                | Delete a car (owned by dealer)              |
+| GET    | /api/cars/search?make=&model= | Search cars by make and model (dealer only) |
+
 
 # Notes
 All endpoints require JWT authentication except /api/login
