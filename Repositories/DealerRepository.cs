@@ -2,16 +2,21 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace CarStockAPI.Repositories
 {
     public class DealerRepository
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
 
         public DealerRepository(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _connectionString = configuration.GetConnectionString("DefaultConnection")!;
+        }
+        private IDbConnection GetConnection()
+        {
+            return new SqliteConnection(_connectionString);
         }
 
         public async Task<Dealer?> GetByUsername(string username)
@@ -21,11 +26,6 @@ namespace CarStockAPI.Repositories
             return await conn.QueryFirstOrDefaultAsync<Dealer>(
                 "SELECT * FROM Dealers WHERE Username = @Username",
                 new { Username = username });
-        }
-
-        private SqliteConnection GetConnection()
-        {
-            return new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
         }
     }
 }
