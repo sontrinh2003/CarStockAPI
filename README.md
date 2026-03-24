@@ -69,7 +69,7 @@ This sample credentials can be used:
 
 ```
 {
-  "username": "dealer1",
+  "username": "citymotors",
   "password": "password1"
 }
 ```
