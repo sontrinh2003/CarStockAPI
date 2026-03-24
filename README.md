@@ -58,7 +58,7 @@ CarStockAPI/
 
 The API will be available at:
 
-http://localhost:8080
+http://localhost:8080/swagger
 
 1. Login to get Token
 
@@ -66,16 +66,20 @@ POST ```/api/login```
 
 This sample credentials can be used:
 
-```{
+```
+{
   "username": "dealer1",
   "password": "password1"
-}```
+}
+```
 
 Response:
 
-```{
+```
+{
   "token": "<JWT_TOKEN>"
-}```
+}
+```
 
 Use the token for all protected endpoints in the Authorization header:
 
