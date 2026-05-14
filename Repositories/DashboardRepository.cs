@@ -4,19 +4,42 @@ using System.Data;
 
 namespace CarStockAPI.Repositories
 {
-    public record LowStockAlert(int Id, string Make, string Model, int Stock, string Message);
-    public record TopBrand(string Brand, int Count);
-    public record RecentSale(int Id, string CustomerName, string Make, string Model, decimal SaleAmount, string SaleDate, string Status);
+    public class LowStockAlert
+    {
+        public int Id { get; set; }
+        public string Make { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public int Stock { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
 
-    public record DashboardSummary(
-        int TotalVehicles,
-        int TotalStock,
-        int LowStockCount,
-        decimal TotalRevenue,
-        IEnumerable<LowStockAlert> LowStockAlerts,
-        IEnumerable<TopBrand> TopBrands,
-        IEnumerable<RecentSale> RecentSales
-    );
+    public class TopBrand
+    {
+        public string Brand { get; set; } = string.Empty;
+        public int Count { get; set; }
+    }
+
+    public class RecentSale
+    {
+        public int Id { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+        public string Make { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public decimal SaleAmount { get; set; }
+        public string SaleDate { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class DashboardSummary
+    {
+        public int TotalVehicles { get; set; }
+        public int TotalStock { get; set; }
+        public int LowStockCount { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public IEnumerable<LowStockAlert> LowStockAlerts { get; set; } = [];
+        public IEnumerable<TopBrand> TopBrands { get; set; } = [];
+        public IEnumerable<RecentSale> RecentSales { get; set; } = [];
+    }
 
     public class DashboardRepository
     {
@@ -64,9 +87,16 @@ namespace CarStockAPI.Repositories
                 ORDER BY s.SaleDate DESC LIMIT 5",
                 new { DealerId = dealerId });
 
-            return new DashboardSummary(
-                totalVehicles, totalStock, lowStockAlerts.Count(),
-                totalRevenue, lowStockAlerts, topBrands, recentSales);
+            return new DashboardSummary
+            {
+                TotalVehicles = totalVehicles,
+                TotalStock = totalStock,
+                LowStockCount = lowStockAlerts.Count(),
+                TotalRevenue = totalRevenue,
+                LowStockAlerts = lowStockAlerts,
+                TopBrands = topBrands,
+                RecentSales = recentSales,
+            };
         }
     }
 }

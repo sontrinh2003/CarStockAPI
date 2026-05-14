@@ -3,22 +3,29 @@ using FastEndpoints;
 
 namespace CarStockAPI.Features.Dashboard
 {
-    public class GetDashboardSummaryRequest
-    {
-        public int LowStockThreshold { get; set; } = 3;
-    }
-
-    public class GetDashboardSummaryEndpoint : Endpoint<GetDashboardSummaryRequest>
+    public class GetDashboardSummaryEndpoint : EndpointWithoutRequest
     {
         private readonly DashboardRepository _repo;
-        public GetDashboardSummaryEndpoint(DashboardRepository repo) { _repo = repo; }
 
-        public override void Configure() { Get("/api/dashboard/summary"); }
+        public GetDashboardSummaryEndpoint(DashboardRepository repo)
+        {
+            _repo = repo;
+        }
 
-        public override async Task HandleAsync(GetDashboardSummaryRequest req, CancellationToken ct)
+        public override void Configure()
+        {
+            Get("/api/dashboard/summary");
+        }
+
+        public override async Task HandleAsync(CancellationToken ct)
         {
             var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
-            var summary = await _repo.GetSummary(dealerId, req.LowStockThreshold);
+
+            // Read threshold from query string manually, default to 3
+            var thresholdStr = HttpContext.Request.Query["lowStockThreshold"].FirstOrDefault();
+            var threshold = int.TryParse(thresholdStr, out var t) ? t : 3;
+
+            var summary = await _repo.GetSummary(dealerId, threshold);
             await Send.OkAsync(summary);
         }
     }
