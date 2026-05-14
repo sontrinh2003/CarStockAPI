@@ -45,7 +45,7 @@ namespace CarStockAPI.Auth
 
             // Get JWT secret from appsettings
             var key = Encoding.ASCII.GetBytes(_config["JwtSettings:SecretKey"]!);
-            var expiryHours = int.Parse(_config["JwtSettings:ExpiryHours"]);
+            var expiryHours = int.Parse(_config["JwtSettings:ExpiryHours"]!);
 
             // create token
             var token = new JwtSecurityToken(

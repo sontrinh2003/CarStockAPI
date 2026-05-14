@@ -7,6 +7,7 @@
         public string Make { get; set; } = null!;
         public string Model { get; set; } = null!;
         public int Year { get; set; }
+        public float Price { get; set; }
         public int Stock { get; set; }
     }
 }

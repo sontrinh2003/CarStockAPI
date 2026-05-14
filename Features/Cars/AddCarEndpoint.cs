@@ -9,6 +9,7 @@ namespace CarStockAPI.Features.Cars
         public string Make { get; set; }
         public string Model { get; set; }
         public int Year { get; set; }
+        public float Price { get; set; }
         public int Stock { get; set; }
     }
 
@@ -48,6 +49,7 @@ namespace CarStockAPI.Features.Cars
                 Make = req.Make,
                 Model = req.Model,
                 Year = req.Year,
+                Price = req.Price,
                 Stock = req.Stock
             };
 
