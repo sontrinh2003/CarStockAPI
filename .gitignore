@@ -1,0 +1,14 @@
+# ── carstockapi-backend ───────────────────────────────────────────
+carstockapi-backend/bin/
+carstockapi-backend/obj/
+carstockapi-backend/*.db
+carstockapi-backend/*.db-shm
+carstockapi-backend/*.db-wal
+carstockapi-backend/appsettings.Development.json
+carstockapi-backend/.vs/
+
+# ── Frontend ──────────────────────────────────────────
+react-frontend/node_modules/
+react-frontend/dist/
+react-frontend/.env
+react-frontend/.env.local
