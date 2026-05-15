@@ -1,51 +1,26 @@
-﻿using Dapper;
+﻿using CarStockAPI.Repositories;
 using FastEndpoints;
-using Microsoft.Data.Sqlite;
 
 namespace CarStockAPI.Features.Analytics
 {
-    public class GetRevenueRequest
+    public class GetRevenueEndpoint : EndpointWithoutRequest
     {
-        public DateTime? From { get; set; }
-        public DateTime? To { get; set; }
-    }
+        private readonly AnalyticsRepository _repo;
 
-    public class GetRevenueEndpoint : Endpoint<GetRevenueRequest>
-    {
-        private readonly IConfiguration _config;
-        public GetRevenueEndpoint(IConfiguration config) { _config = config; }
+        public GetRevenueEndpoint(AnalyticsRepository repo) { _repo = repo; }
 
         public override void Configure() { Get("/api/analytics/revenue"); }
 
-        public override async Task HandleAsync(GetRevenueRequest req, CancellationToken ct)
+        public override async Task HandleAsync(CancellationToken ct)
         {
             var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
-            using var conn = new SqliteConnection(_config.GetConnectionString("DefaultConnection"));
+            var from = HttpContext.Request.Query["from"].FirstOrDefault()
+                           ?? new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).ToString("yyyy-MM-dd");
+            var to = HttpContext.Request.Query["to"].FirstOrDefault()
+                           ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            var now = DateTime.UtcNow;
-            var start = new DateTime(now.Year, now.Month, 1);
-
-            var total = await conn.QuerySingleAsync<decimal>(
-                "SELECT COALESCE(SUM(SaleAmount),0) FROM Sales WHERE DealerId=@DealerId AND Status!='Cancelled'",
-                new { DealerId = dealerId });
-
-            var thisMonth = await conn.QuerySingleAsync<decimal>(
-                "SELECT COALESCE(SUM(SaleAmount),0) FROM Sales WHERE DealerId=@DealerId AND Status!='Cancelled' AND SaleDate >= @Start",
-                new { DealerId = dealerId, Start = start.ToString("yyyy-MM-dd") });
-
-            var totalSales = await conn.QuerySingleAsync<int>(
-                "SELECT COUNT(*) FROM Sales WHERE DealerId=@DealerId AND Status!='Cancelled'",
-                new { DealerId = dealerId });
-
-            var avgSale = totalSales > 0 ? total / totalSales : 0;
-
-            await Send.OkAsync(new
-            {
-                Total = total,
-                ThisMonth = thisMonth,
-                TotalSales = totalSales,
-                AverageSale = Math.Round(avgSale, 2),
-            });
+            var result = await _repo.GetRevenue(dealerId, from, to);
+            await Send.OkAsync(result);
         }
     }
 }
