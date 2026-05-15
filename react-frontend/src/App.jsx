@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const API_BASE = "http://localhost:8080";
@@ -548,33 +548,60 @@ function InventoryPage() {
   const api = useApi();
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false); // subtle indicator during debounce
   const [err, setErr] = useState("");
-  const [search, setSearch] = useState({ make: "", model: "" });
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
   const [modal, setModal] = useState(null); // "add" | "stock:{id}"
   const [form, setForm] = useState({ make: "", model: "", year: new Date().getFullYear(), price: 0, stock: 0 });
   const [stockVal, setStockVal] = useState(0);
   const [saving, setSaving] = useState(false);
+  const debounceRef = useRef(null);
 
-  const fetchCars = useCallback(async () => {
-    setLoading(true); setErr("");
+  // Core fetch — called on mount and after debounce
+  const fetchCars = useCallback(async (searchMake = "", searchModel = "") => {
+    setErr("");
     try {
-      const q = search.make || search.model
-        ? `/api/cars/search?make=${encodeURIComponent(search.make)}&model=${encodeURIComponent(search.model)}`
+      const q = searchMake || searchModel
+        ? `/api/cars/search?make=${encodeURIComponent(searchMake)}&model=${encodeURIComponent(searchModel)}`
         : "/api/cars";
       const data = await api.get(q);
       setCars(Array.isArray(data) ? data : []);
     } catch (e) { setErr(e.message); }
     setLoading(false);
-  }, [search.make, search.model]);
+    setSearching(false);
+  }, []);
 
+  // Initial load
   useEffect(() => { fetchCars(); }, []);
+
+  // Debounced search — fires 300ms after the user stops typing
+  function handleSearchChange(field, value) {
+    const newMake  = field === "make"  ? value : make;
+    const newModel = field === "model" ? value : model;
+
+    if (field === "make")  setMake(value);
+    if (field === "model") setModel(value);
+
+    setSearching(true);
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      fetchCars(newMake, newModel);
+    }, 300);
+  }
+
+  function handleClear() {
+    setMake(""); setModel("");
+    clearTimeout(debounceRef.current);
+    fetchCars("", "");
+  }
 
   async function handleAdd(e) {
     e.preventDefault(); setSaving(true);
     try {
       await api.post("/api/cars", { ...form, year: Number(form.year), price: parseFloat(form.price), stock: Number(form.stock) });
       setModal(null); setForm({ make: "", model: "", year: new Date().getFullYear(), price: 0, stock: 0 });
-      fetchCars();
+      fetchCars(make, model);
     } catch (e) { setErr(e.message); }
     setSaving(false);
   }
@@ -583,16 +610,18 @@ function InventoryPage() {
     setSaving(true);
     try {
       await api.put(`/api/cars/${id}/stock`, { stock: Number(stockVal) });
-      setModal(null); fetchCars();
+      setModal(null); fetchCars(make, model);
     } catch (e) { setErr(e.message); }
     setSaving(false);
   }
 
   async function handleDelete(id) {
     if (!confirm("Remove this vehicle from inventory?")) return;
-    try { await api.del(`/api/cars/${id}`); fetchCars(); }
+    try { await api.del(`/api/cars/${id}`); fetchCars(make, model); }
     catch (e) { setErr(e.message); }
   }
+
+  const hasSearch = make || model;
 
   return (
     <Page
@@ -601,25 +630,50 @@ function InventoryPage() {
     >
       <Alert msg={err} />
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
-        <input
-          placeholder="Search make…"
-          value={search.make}
-          onChange={e => setSearch(s => ({ ...s, make: e.target.value }))}
-          style={{ maxWidth: 200 }}
-        />
-        <input
-          placeholder="Search model…"
-          value={search.model}
-          onChange={e => setSearch(s => ({ ...s, model: e.target.value }))}
-          style={{ maxWidth: 200 }}
-        />
-        <Btn onClick={fetchCars} variant="secondary">Search</Btn>
-        <Btn onClick={() => { setSearch({ make: "", model: "" }); setTimeout(fetchCars, 0); }} variant="ghost">Clear</Btn>
+      {/* Search bar */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 18, alignItems: "center" }}>
+        <div style={{ position: "relative" }}>
+          <input
+            placeholder="Search make…"
+            value={make}
+            onChange={e => handleSearchChange("make", e.target.value)}
+            style={{ maxWidth: 200, paddingRight: make ? 28 : 12 }}
+          />
+          {make && (
+            <button onClick={() => handleSearchChange("make", "")} style={{
+              position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+              background: "none", border: "none", color: "var(--muted)", cursor: "pointer",
+              fontSize: 14, lineHeight: 1, padding: 0,
+            }}>✕</button>
+          )}
+        </div>
+        <div style={{ position: "relative" }}>
+          <input
+            placeholder="Search model…"
+            value={model}
+            onChange={e => handleSearchChange("model", e.target.value)}
+            style={{ maxWidth: 200, paddingRight: model ? 28 : 12 }}
+          />
+          {model && (
+            <button onClick={() => handleSearchChange("model", "")} style={{
+              position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+              background: "none", border: "none", color: "var(--muted)", cursor: "pointer",
+              fontSize: 14, lineHeight: 1, padding: 0,
+            }}>✕</button>
+          )}
+        </div>
+        {searching && (
+          <span style={{ fontSize: 12, color: "var(--muted)" }}>Searching…</span>
+        )}
+        {!searching && hasSearch && (
+          <Btn variant="ghost" onClick={handleClear}>Clear all</Btn>
+        )}
       </div>
 
       <Card style={{ padding: 0, overflow: "hidden" }}>
-        {loading ? <Spinner /> : !cars.length ? <EmptyState msg="No vehicles found." /> : (
+        {loading ? <Spinner /> : !cars.length
+          ? <EmptyState msg={hasSearch ? `No vehicles matching "${[make, model].filter(Boolean).join(" ")}".` : "No vehicles found."} />
+          : (
           <table>
             <thead>
               <tr>

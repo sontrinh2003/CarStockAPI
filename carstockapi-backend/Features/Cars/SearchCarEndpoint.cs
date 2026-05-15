@@ -9,7 +9,7 @@ namespace CarStockAPI.Features.Cars
         public string? Model { get; set; }
     }
 
-    public class SearchCarsEndpoint : Endpoint<SearchCarsRequest>
+    public class SearchCarsEndpoint : EndpointWithoutRequest
     {
         private readonly CarRepository _repo;
 
@@ -23,12 +23,13 @@ namespace CarStockAPI.Features.Cars
             Get("/api/cars/search");
         }
 
-        public override async Task HandleAsync(SearchCarsRequest req, CancellationToken ct)
+        public override async Task HandleAsync(CancellationToken ct)
         {
             var dealerId = int.Parse(User.FindFirst("dealerId")!.Value);
 
-            var make = req.Make ?? string.Empty;
-            var model = req.Model ?? string.Empty;
+            // Read from query string manually
+            var make = HttpContext.Request.Query["make"].FirstOrDefault() ?? string.Empty;
+            var model = HttpContext.Request.Query["model"].FirstOrDefault() ?? string.Empty;
 
             var results = await _repo.Search(dealerId, make, model);
 
