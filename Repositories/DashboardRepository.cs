@@ -63,7 +63,7 @@ namespace CarStockAPI.Repositories
                 "SELECT COALESCE(SUM(Stock), 0) FROM Cars WHERE DealerId = @DealerId", new { DealerId = dealerId });
 
             var totalRevenue = await conn.QuerySingleAsync<decimal>(
-                "SELECT COALESCE(SUM(SaleAmount), 0) FROM Sales WHERE DealerId = @DealerId AND Status != 'Cancelled'",
+                "SELECT COALESCE(SUM(SaleAmount), 0.0) FROM Sales WHERE DealerId = @DealerId AND Status != 'Cancelled'",
                 new { DealerId = dealerId });
 
             var lowStockAlerts = await conn.QueryAsync<LowStockAlert>(@"
